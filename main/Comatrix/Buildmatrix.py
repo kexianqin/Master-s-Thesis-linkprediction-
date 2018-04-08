@@ -138,6 +138,15 @@ def showmatrix2(matrix):
                     matrixtxt = matrixtxt + matrix[i][0]+'\t'+matrix[0][j]+'\t'+matrix[i][j]+'\n'
 
     return matrixtxt
+
+@log
+def showvocab(dic,set_key_list):
+    '''输出关键词及频数'''
+    vocabtxt = ''
+    for w in set_key_list:
+        vocabtxt += w + '\t'+str(dic[w])+'\n'
+    return vocabtxt
+
 @log
 def wryer(path, text):
     with open(path, 'a', encoding='utf-8') as f:
@@ -149,7 +158,8 @@ def wryer(path, text):
 
 if __name__ == "__main__":
     readpath = r"../Output/8.8.21.xls"
-    outputpath = r'C:\Users\Administrator\Desktop\顶点对(阈值为5).txt'
+    outputpath1 = r'C:\Users\Administrator\Desktop\%s'%'顶点对(阈值为5).txt'
+    outputpath2 = r'C:\Users\Administrator\Desktop\%s'%'词频(阈值为5).txt'
     threshold=5
 
     data=readxls(readpath)
@@ -158,22 +168,23 @@ if __name__ == "__main__":
 
     set_key_list=get_set_key(dic,threshold)
     print('关键词个数：',len(set_key_list))
-    wryer(r'C:\Users\Administrator\Desktop\%s'%'阈值为5.txt', reduce(lambda x,y:x+'\n'+y,set_key_list))
+    print(str(dic['地震']))
+    wryer(outputpath2, showvocab(dic,set_key_list))
     # 输出到文件的形式来查看 共现矩阵 由哪些关键词构成
 
-    matrix=build_matirx(set_key_list)
-    print(type(matrix))
-
-    matrix=init_matrix(set_key_list, matrix)
-
-    format_data=format_data(data,set_key_list)
-
-    start_time = time.time()
-    result_matrix=count_matrix(matrix, format_data)
-    end_time = time.time()
-    print(end_time - start_time)
-
-    print(result_matrix[0],'\n',[row[0] for row in result_matrix])
-
-    show_matrix=showmatrix2(result_matrix)
-    wryer(outputpath, show_matrix)
+    # matrix=build_matirx(set_key_list)
+    # print(type(matrix))
+    #
+    # matrix=init_matrix(set_key_list, matrix)
+    #
+    # format_data=format_data(data,set_key_list)
+    #
+    # start_time = time.time()
+    # result_matrix=count_matrix(matrix, format_data)
+    # end_time = time.time()
+    # print(end_time - start_time)
+    #
+    # print(result_matrix[0],'\n',[row[0] for row in result_matrix])
+    #
+    # show_matrix=showmatrix2(result_matrix)
+    # wryer(outputpath, show_matrix)

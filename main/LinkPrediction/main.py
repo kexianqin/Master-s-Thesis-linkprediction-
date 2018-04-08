@@ -2,7 +2,7 @@ import networkx as nx
 from class_similarity_easytest import*
 from sampling_train_test_split import*
 from metrics import *
-
+from Lda.dolda import *
 
 if __name__ == '__main__':
     readpath=r'C:\Users\Administrator\Desktop\顶点对(阈值为5).txt' #文件地址
@@ -44,3 +44,12 @@ if __name__ == '__main__':
 
     precision2=precision2(score, matrix_test, matrix_train,vertex_dic,200)
     print('precision:',precision2[0],'correct_pair:',precision2[1],'wrong_pair:',precision2[2])
+
+    print('---------------隶属主题矩阵------------------------')
+    readpath = r"../Output/8.8.21.xls"  # 与Buildmatrix中设置的参数一致
+    threshold = 5  # 与Buildmatrix中设置的参数一致
+    topics = 10
+    top_n_words = 10
+    x, vocab = preprocess(readpath, threshold)
+    topic_word = dolda(x, vocab, topics)
+    print(link_belong(topic_word,precision2[1],vocab))
