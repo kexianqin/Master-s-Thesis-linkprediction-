@@ -5,19 +5,19 @@ import xlrd
 from pprint import pprint as p
 from functools import reduce
 
-def log(func):
-    def wrapper(*args, **kwargs):
-        now_time = str(time.strftime('%Y-%m-%d %X', time.localtime()))
-        print('------------------------------------------------')
-        print('%s %s called' % (now_time, func.__name__))
-        print('Document:%s' % func.__doc__)
-        print('%s returns:' % func.__name__)
-        re = func(*args, **kwargs)
-        p(re)
-        return re
-    return wrapper
+# def log(func):
+#     def wrapper(*args, **kwargs):
+#         now_time = str(time.strftime('%Y-%m-%d %X', time.localtime()))
+#         print('------------------------------------------------')
+#         print('%s %s called' % (now_time, func.__name__))
+#         print('Document:%s' % func.__doc__)
+#         print('%s returns:' % func.__name__)
+#         re = func(*args, **kwargs)
+#         p(re)
+#         return re
+#     return wrapper
 
-@log
+# @log
 def readxls(path):
     '''读取Excle中的数据，返回的data形如['四川/九寨沟/', '乐观/四川人/小震/',...]'''
     xl = xlrd.open_workbook(path)
@@ -28,7 +28,7 @@ def readxls(path):
     data=data[1][1:]
     return data
 
-@log
+# @log
 def countfrequency(data):
     '''统计词频(其中data为readxls步的返回值),返回一个字典,如{'街区': 114,'天灾': 113,...}'''
     keylist = []
@@ -40,7 +40,7 @@ def countfrequency(data):
     dic=dict(c)
     return dic
 
-@log
+# @log
 def get_set_key(dic,threshold):
     '''选取频数大于等于Threshold的关键词构建一个集合，用于作为共现矩阵的首行和首列'''
     wf = {k: v for k, v in dic.items() if v >= threshold}
@@ -49,7 +49,7 @@ def get_set_key(dic,threshold):
         set_key_list.append(a[0])
     return set_key_list
 
-@log
+# @log
 def build_matirx(set_key_list):
     '''建立矩阵，矩阵的高度和宽度为关键词集合的长度+1'''
     edge = len(set_key_list)+1
@@ -57,7 +57,7 @@ def build_matirx(set_key_list):
     matrix = [['' for j in range(edge)] for i in range(edge)] #<class 'list'>
     return matrix
 
-@log
+# @log
 def init_matrix(set_key_list, matrix):
     '''初始化矩阵，将关键词集合赋值给第一列和第二列'''
     matrix[0][1:] = np.array(set_key_list)
@@ -65,7 +65,7 @@ def init_matrix(set_key_list, matrix):
     matrix[0][1:] = np.array(set_key_list)
     return matrix
 
-@log
+# @log
 def format_data(data,set_key_list):
     '''格式化需要计算的数据，将原始数据格式转换成二维数组'''
     formated_data = []
@@ -76,13 +76,13 @@ def format_data(data,set_key_list):
         for e in ech_line:
             if e in set_key_list:
                 temp.append(e)
-        ech_line=temp
+        ech_line = temp
 
         ech_line = list(set(filter(lambda x: x != '', ech_line))) #set去掉重复数据
         formated_data.append(ech_line)
     return formated_data
 
-@log
+# @log
 def count_matrix(matrix, formated_data):
     '''计算各个关键词共现次数'''
     keywordlist=matrix[0][1:]  #列出所有关键词
@@ -114,7 +114,7 @@ def count_matrix(matrix, formated_data):
                 matrix[col][row]=matrix[row][col]
     return matrix
 
-@log
+# @log
 def showmatrix(matrix):
     '''以矩阵的方式'''
     matrixtxt = ''
@@ -127,7 +127,7 @@ def showmatrix(matrix):
         print('No.'+str(count)+' had been done!')
     return matrixtxt
 
-@log
+# @log
 def showmatrix2(matrix):
     '''以顶点对的方式'''
     matrixtxt = ''
@@ -139,7 +139,7 @@ def showmatrix2(matrix):
 
     return matrixtxt
 
-@log
+# @log
 def showvocab(dic,set_key_list):
     '''输出关键词及频数'''
     vocabtxt = ''
@@ -147,7 +147,7 @@ def showvocab(dic,set_key_list):
         vocabtxt += w + '\t'+str(dic[w])+'\n'
     return vocabtxt
 
-@log
+# @log
 def wryer(path, text):
     with open(path, 'a', encoding='utf-8') as f:
         f.write(text)
@@ -157,10 +157,12 @@ def wryer(path, text):
 
 
 if __name__ == "__main__":
-    readpath = r"../Output/8.8.21.xls"
-    outputpath1 = r'C:\Users\Administrator\Desktop\%s'%'顶点对(阈值为5).txt'
-    outputpath2 = r'C:\Users\Administrator\Desktop\%s'%'词频(阈值为5).txt'
-    threshold=5
+    stage='起始'
+    threshold = 3
+
+    readpath = r"../Output/"+stage+"阶段.xls"
+    outputpath1 = r'../Output/'+stage+r'阶段/%s'%''+stage+'顶点对(阈值为'+str(threshold)+').txt'
+    outputpath2 = r'../Output/'+stage+r'阶段/%s'%''+stage+'词频(阈值为'+str(threshold)+').txt'
 
     data=readxls(readpath)
 
@@ -172,19 +174,19 @@ if __name__ == "__main__":
     wryer(outputpath2, showvocab(dic,set_key_list))
     # 输出到文件的形式来查看 共现矩阵 由哪些关键词构成
 
-    # matrix=build_matirx(set_key_list)
-    # print(type(matrix))
-    #
-    # matrix=init_matrix(set_key_list, matrix)
-    #
-    # format_data=format_data(data,set_key_list)
-    #
-    # start_time = time.time()
-    # result_matrix=count_matrix(matrix, format_data)
-    # end_time = time.time()
-    # print(end_time - start_time)
-    #
-    # print(result_matrix[0],'\n',[row[0] for row in result_matrix])
-    #
-    # show_matrix=showmatrix2(result_matrix)
-    # wryer(outputpath, show_matrix)
+    matrix=build_matirx(set_key_list)
+    print(type(matrix))
+
+    matrix=init_matrix(set_key_list, matrix)
+
+    format_data=format_data(data,set_key_list)
+
+    start_time = time.time()
+    result_matrix=count_matrix(matrix, format_data)
+    end_time = time.time()
+    print(end_time - start_time)
+
+    print(result_matrix[0],'\n',[row[0] for row in result_matrix])
+
+    show_matrix=showmatrix2(result_matrix)
+    wryer(outputpath1, show_matrix)

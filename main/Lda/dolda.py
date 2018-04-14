@@ -30,9 +30,9 @@ def preprocess(readpath,threshold):
     c.append(b)  # 一维list变为二维list
     x = np.array(c)  # <class 'numpy.ndarray'> [[8942 8104 6338 ......]]
     vocab = tuple(a)  # <class 'tuple'> ['地震', '九寨沟', '四川', ......]
-    print(wf_order)
-    print('type(x):', type(x), '\n x.shape:', x.shape, '\n x:', x)
-    print('type(vocab):', type(vocab), '\n vocab:', vocab)
+    # print(wf_order)
+    # print('type(x):', type(x), '\n x.shape:', x.shape, '\n x:', x)
+    # print('type(vocab):', type(vocab), '\n vocab:', vocab)
     return x,vocab
 
 '''
@@ -49,7 +49,7 @@ def dolda(x,vocab,topics):
 '''
 输出各主题的topN关键词
 '''
-def topN(topic_word,top_n_words):
+def topN(topic_word,top_n_words,vocab):
     n = top_n_words  # 每个主题中比重最大的前N个词
     for i, topic_dist in enumerate(topic_word):
         topic_words = np.array(vocab)[np.argsort(topic_dist)][:-(n + 1):-1]

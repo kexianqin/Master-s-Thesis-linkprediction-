@@ -52,8 +52,8 @@ class ChPreprocess:
 
 
 if __name__ == "__main__":
-    readpath=r"..\Data\8.8.21.xlsx"  #Excel格式有要求，只要三列，依次为id，内容，发布时间
-    outputpath=r"..\Output\8.8.21.xls"
+    readpath=r"..\Data\起始阶段.xlsx"  #Excel格式有要求，只要三列，依次为id，内容，发布时间
+    outputpath=r"..\Output\起始阶段.xls"
 
     chPreprocess=ChPreprocess()
     xls_data = get_data(readpath)
